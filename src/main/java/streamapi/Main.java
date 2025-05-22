@@ -73,8 +73,13 @@ public class Main {
      * @return An open {@link InputStream} for the resource file
      */
     private static InputStream getResourceAsStream(String path) {
-        // TODO
-        throw new UnsupportedOperationException();
+        // Ressource ueber ClassLoader zu laden
+        InputStream stream = Main.class.getClassLoader().getResourceAsStream(path);
+        if (stream == null) {
+            // Wenn nichts gefunden wurde, Fehler ausgeben
+            throw new IllegalArgumentException("Resource nicht gefunden: " + path);
+        }
+        return stream;
     }
 
     /**
@@ -88,31 +93,17 @@ public class Main {
      * @return String of all matching lines, separated by {@code "\n"}
      */
     public static String resources(String path) {
-        // TODO
-        StringBuilder result = new StringBuilder();
+        try (InputStream input = getResourceAsStream(path);
+             Scanner scanner = new Scanner(input)) {
 
-        try (InputStream stream = getResourceAsStream(path)) {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream));
+            return scanner.tokens()
+                // Beginnt mit 'a' UND mindestens 2 Zeichen lang
+                .filter(line -> line.length() >= 2 && line.startsWith("a"))
+                // Fuegt alle gültigen Zeilen mit \n zusammen
+                .collect(Collectors.joining("\n"));
 
-            List<String> allLines = new ArrayList<>();
-
-            String newLine = r.readLine();
-            while (newLine != null) {
-                allLines.add(newLine);
-                newLine = r.readLine();
-            }
-
-            for (int i = 1; i < allLines.size(); i++) {
-                String s = allLines.get(i);
-                if (s.startsWith("a") && !(s.length() < 2)) {
-                    result.append(allLines.get(i)).append("\n");
-                }
-            }
-
-        } catch (IOException e) {
-            System.err.println("Ouch, that didn't work: \n" + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Fehler beim Lesen der Resource: " + path, e);
         }
-
-        return result.toString();
     }
 }
