@@ -57,22 +57,10 @@ public class Main {
      * @return List of ten random integers (between 0 and 10)
      */
     public static List<Integer> random() {
-        Random r = new Random();
-
-        // TODO
-        List<Integer> randomIntegers = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            randomIntegers.add(r.nextInt(10));
-        }
-
-        List<Integer> returnList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            if (randomIntegers.get(i) % 2 == 0) {
-                returnList.add(randomIntegers.get(i) * randomIntegers.get(i));
-            }
-        }
-
-        return returnList;
+        return new Random()
+            .ints(10, 0, 11) // 10 Zufallszahlen 0 bis 10
+            .boxed() // Boxe int zu Integer
+            .collect(Collectors.toList()); // Sammeln als Liste
     }
 
     /**
