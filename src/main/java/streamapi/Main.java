@@ -58,7 +58,7 @@ public class Main {
      */
     public static List<Integer> random() {
         return new Random()
-            .ints(10, 0, 11) // 10 Zufallszahlen 0 bis 10
+            .ints(10, 0, 10) // 10 Zufallszahlen 0 bis 10
             .boxed() // Boxe int zu Integer
             .collect(Collectors.toList()); // Sammeln als Liste
     }
